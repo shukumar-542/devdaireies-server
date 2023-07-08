@@ -33,10 +33,43 @@ async function run() {
 
     const BlogCollection =  client.db('dev-dairies').collection('blogs');
 
+    // get all blogs
     app.get('/blogs', async(req,res)=>{
         const result = await BlogCollection.find().toArray();
         res.send(result)
+    });
+
+    // get blogs by category GO
+    app.get('/blogs/go', async(req,res)=>{
+        const result = await BlogCollection.find({category : 'Go'}).toArray()
+        res.send(result)
     })
+
+    // get blogs by category javascript
+    app.get('/blogs/javascript', async(req,res)=>{
+        const result = await BlogCollection.find({category : 'javascript'}).toArray()
+        res.send(result)
+    })
+
+    // get blogs by category php
+    app.get('/blogs/php', async(req,res)=>{
+        const result = await BlogCollection.find({category : 'PHP'}).toArray()
+        res.send(result)
+    })
+    
+    // get blogs by category Python
+    app.get('/blogs/python', async(req,res)=>{
+        const result = await BlogCollection.find({category : 'Python'}).toArray()
+        res.send(result)
+    })
+
+
+    // get blogs by ascending order by like
+    app.get('/blogs/popular', async(req,res)=>{
+        const result = await BlogCollection.find().sort({likes : -1}).toArray();
+        res.send(result)
+    })
+
 
 
     // Connect the client to the server	(optional starting in v4.7)
