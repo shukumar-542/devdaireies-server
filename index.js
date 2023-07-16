@@ -16,7 +16,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://devDairies:smS5I7TcQcdo4uPC@cluster0.6jlixm1.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -67,6 +67,14 @@ app.get('/blogs/python', async(req,res)=>{
 app.get('/blogs/populars', async(req,res)=>{
     const result = await BlogCollection.find().sort({likes : -1}).limit(6).toArray();
     res.send(result)
+})
+
+// get blogs by id
+app.get('/blogs/:id', async(req,res)=>{
+  const id = req.params.id;
+  const query = {_id : new ObjectId(id)}
+  const result = await BlogCollection.findOne(query)
+  res.send(result)
 })
 
     // Connect the client to the server	(optional starting in v4.7)
