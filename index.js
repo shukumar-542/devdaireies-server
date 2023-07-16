@@ -64,7 +64,7 @@ app.get('/blogs/python', async(req,res)=>{
 
 
 // get blogs by ascending order by like
-app.get('/blogs/populars', async(req,res)=>{
+app.get('/blogs/popular', async(req,res)=>{
     const result = await BlogCollection.find().sort({likes : -1}).limit(6).toArray();
     res.send(result)
 })
@@ -74,6 +74,12 @@ app.get('/blogs/:id', async(req,res)=>{
   const id = req.params.id;
   const query = {_id : new ObjectId(id)}
   const result = await BlogCollection.findOne(query)
+  res.send(result)
+})
+
+// get three blog sort by date
+app.get('/blog/date', async(req,res)=>{
+  const result = await BlogCollection.find().sort({date : -1}).limit(3).toArray();
   res.send(result)
 })
 
