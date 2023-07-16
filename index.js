@@ -17,7 +17,8 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://devDairies:PIsMBeZz4MGo7VSG@cluster0.66lxfzt.mongodb.net/?retryWrites=true&w=majority";
+// const uri = "mongodb+srv://devDairies:PIsMBeZz4MGo7VSG@cluster0.66lxfzt.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://devDairies:4jj4EhEGu9h8Ri9S@cluster0.6jlixm1.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -31,7 +32,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-    const BlogCollection =  client.db('dev-dairies').collection('blogs');
+    const BlogCollection =  client.db('devdairies').collection('blogs');
 
     // get all blogs
     app.get('/blogs', async(req,res)=>{
@@ -56,7 +57,7 @@ async function run() {
         const result = await BlogCollection.find({category : 'PHP'}).toArray()
         res.send(result)
     })
-    
+
     // get blogs by category Python
     app.get('/blogs/python', async(req,res)=>{
         const result = await BlogCollection.find({category : 'Python'}).toArray()
@@ -65,10 +66,12 @@ async function run() {
 
 
     // get blogs by ascending order by like
-    app.get('/blogs/popular', async(req,res)=>{
-        const result = await BlogCollection.find().sort({likes : -1}).toArray();
+    app.get('/blogs/populars', async(req,res)=>{
+        const result = await BlogCollection.find().sort({likes : -1}).limit(6).toArray();
         res.send(result)
     })
+
+
 
 
 
