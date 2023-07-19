@@ -83,19 +83,31 @@ async function run() {
       res.send(result)
     })
 
-    // get blog search by sub category
+    // get blog search by sub category category and tags
     app.get('/blog/:text', async (req, res) => {
       const text = req.params.text;
       const result = await BlogCollection.find({
         $or: [
-          { subcategory: { $regex: text, $options: "i" }},
-          { category: { $regex: text, $options: "i" }},
-          { tags: { $regex: text, $options: "i" }},
+          { subcategory: { $regex: text, $options: "i" } },
+          { category: { $regex: text, $options: "i" } },
+          { tags: { $regex: text, $options: "i" } },
 
         ]
       }).toArray()
       res.send(result)
     })
+
+    // get blogs by tags
+    app.get('/subcategory/:text', async (req, res) => {
+      const text = req.params.text;
+      const result = await BlogCollection.find({
+        $or: [
+          { subcategory: { $regex: text, $options: "i" } },
+        ]
+      }).toArray()
+      res.send(result)
+    })
+
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
