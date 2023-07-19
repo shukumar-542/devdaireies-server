@@ -87,7 +87,12 @@ async function run() {
     app.get('/blog/:text', async (req, res) => {
       const text = req.params.text;
       const result = await BlogCollection.find({
-        $or: [{ subcategory: { $regex: text, $options: "i" } }]
+        $or: [
+          { subcategory: { $regex: text, $options: "i" }},
+          { category: { $regex: text, $options: "i" }},
+          { tags: { $regex: text, $options: "i" }},
+
+        ]
       }).toArray()
       res.send(result)
     })
