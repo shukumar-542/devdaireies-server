@@ -32,9 +32,8 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-    const BlogCollection = client.db('devdairies').collection('blogs');
+    const BlogCollection = client.db('devdairires').collection('blogs');
 
-    // get all blogs
     app.get('/blogs', async (req, res) => {
       const result = await BlogCollection.find().toArray();
       res.send(result)
@@ -66,17 +65,36 @@ async function run() {
 
 
     // get blogs by ascending order by like
-    app.get('/blogs/populars', async (req, res) => {
+    app.get('/blogs/popular', async (req, res) => {
       const result = await BlogCollection.find().sort({ likes: -1 }).limit(6).toArray();
       res.send(result)
     })
 
+    // get blogs by id
+    app.get('/blogs/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await BlogCollection.findOne(query)
+      res.send(result)
+    })
 
+    // get three blog sort by date
+    app.get('/blog/date', async (req, res) => {
+      const result = await BlogCollection.find().sort({ date: -1 }).limit(3).toArray();
+      res.send(result)
+    })
 
-
+    // get blog search by sub category
+    app.get('/blog/:text', async (req, res) => {
+      const text = req.params.text;
+      const result = await BlogCollection.find({
+        $or: [{ subcategory: { $regex: text, $options: "i" } }]
+      }).toArray()
+      res.send(result)
+    })
 
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -86,6 +104,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
 
 
 
