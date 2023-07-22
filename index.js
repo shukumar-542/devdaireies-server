@@ -86,6 +86,15 @@ async function run() {
       const result = await BlogCollection.findOne(query)
       res.send(result)
     })
+    // get blogs by email
+    app.get('/blog/:email', async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email }
+      const result = await BlogCollection.find(query).toArray()
+      res.send(result)
+    })
+
 
     // get three blog sort by date
     app.get('/blog/date', async (req, res) => {
