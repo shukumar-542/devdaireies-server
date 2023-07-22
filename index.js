@@ -32,11 +32,21 @@ async function run() {
   try {
 
     const BlogCollection = client.db('devdairires').collection('blogs');
+    const userCollection = client.db('devdairires').collection('users')
+    const commentCollection = client.db('devdairires').collection('comment')
 
     app.get('/blogs', async (req, res) => {
       const result = await BlogCollection.find().toArray();
       res.send(result)
     });
+
+    // post blog in database
+    app.post('/blog', async(req,res)=>{
+      const blog = req.body
+      const result = await BlogCollection.insertOne(blog);
+      res.send(result)
+    })
+
 
     // get blogs by category GO
     app.get('/blogs/go', async (req, res) => {
@@ -107,6 +117,37 @@ async function run() {
       }).toArray()
       res.send(result)
     })
+
+  
+    // saved user in database
+    app.put('/users/:email', async(req,res)=>{
+      const email = req.params.email;
+      const user = req.body;
+      const query = { email: email };
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: user
+      }
+      const result = await userCollection.updateOne(query, updateDoc, options)
+      console.log(result);
+      res.send(result)
+  })
+
+  // saved all comment in database with blog id
+  app.post('/comment', async(req,res)=>{
+    const comment =  req.body;    
+    const result = await commentCollection.insertOne(comment)
+    res.send(result);
+  })
+
+  // get all comment by id
+  app.get('/comment/:id', async(req,res)=>{
+    const id = req.params.id;
+    // console.log(id);
+    const query = { id : id};
+    const result = await commentCollection.find(query).toArray();
+    res.send(result);
+  })
 
 
     // Connect the client to the server	(optional starting in v4.7)
