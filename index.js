@@ -171,7 +171,32 @@ async function run() {
       const result = await userCollection.find().toArray()
       res.send(result)
     })
-    
+
+
+    // approved blog
+    app.patch('/blog/update/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: { status: 'approved' }
+      }
+      const result = await BlogCollection.updateOne(query, updateDoc)
+      res.send(result)
+    })
+
+
+    // deny blog
+    app.patch('/blog/deny/:id',async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: { status: 'deny' }
+      }
+      const result = await BlogCollection.updateOne(query, updateDoc)
+      res.send(result)
+    })
+
+
 
 
     // Connect the client to the server	(optional starting in v4.7)
