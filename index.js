@@ -41,7 +41,7 @@ async function run() {
     });
 
     // post blog in database
-    app.post('/blog', async(req,res)=>{
+    app.post('/blog', async (req, res) => {
       const blog = req.body
       const result = await BlogCollection.insertOne(blog);
       res.send(result)
@@ -89,7 +89,7 @@ async function run() {
     // get blogs by email
     app.get('/blog/:email', async (req, res) => {
       const email = req.params.email;
-      console.log(email);
+      // console.log(email);
       const query = { email: email }
       const result = await BlogCollection.find(query).toArray()
       res.send(result)
@@ -97,7 +97,14 @@ async function run() {
 
 
     // get three blog sort by date
-    app.get('/blog/date', async (req, res) => {
+    // app.get('/blog/date', async (req, res) => {
+    //   const result = await BlogCollection.find().sort({ date: -1 }).limit(3).toArray();
+    //   console.log('hello');
+    //   res.send(result)
+
+    // }) 
+
+    app.get('/date', async (req, res) => {
       const result = await BlogCollection.find().sort({ date: -1 }).limit(3).toArray();
       res.send(result)
     })
@@ -127,9 +134,27 @@ async function run() {
       res.send(result)
     })
 
-  
-    // saved user in database
-    app.put('/users/:email', async(req,res)=>{
+
+
+
+    // saved all comment in database with blog id
+    app.post('/comment', async (req, res) => {
+      const comment = req.body;
+      const result = await commentCollection.insertOne(comment)
+      res.send(result);
+    })
+
+    // get all comment by id
+    app.get('/comment/:id', async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { id: id };
+      const result = await commentCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    // saved user in database and role
+    app.put('/users/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const query = { email: email };
@@ -140,23 +165,13 @@ async function run() {
       const result = await userCollection.updateOne(query, updateDoc, options)
       console.log(result);
       res.send(result)
-  })
-
-  // saved all comment in database with blog id
-  app.post('/comment', async(req,res)=>{
-    const comment =  req.body;    
-    const result = await commentCollection.insertOne(comment)
-    res.send(result);
-  })
-
-  // get all comment by id
-  app.get('/comment/:id', async(req,res)=>{
-    const id = req.params.id;
-    // console.log(id);
-    const query = { id : id};
-    const result = await commentCollection.find(query).toArray();
-    res.send(result);
-  })
+    })
+    // get all Users 
+    app.get('/users', async (req, res) => {
+      const result = await userCollection.find().toArray()
+      res.send(result)
+    })
+    
 
 
     // Connect the client to the server	(optional starting in v4.7)
