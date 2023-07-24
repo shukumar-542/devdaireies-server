@@ -41,8 +41,8 @@ async function run() {
     });
 
     // get all approved blogs
-    app.get('/blog/approved', async(req,res)=>{
-      const result = await BlogCollection.find({status : 'approved'}).toArray();
+    app.get('/blog/approved', async (req, res) => {
+      const result = await BlogCollection.find({ status: 'approved' }).toArray();
       res.send(result)
     })
     // post blog in database
@@ -110,7 +110,7 @@ async function run() {
     // }) 
 
     app.get('/date', async (req, res) => {
-      const result = await BlogCollection.find({status : 'approved'}).sort({ date: -1 }).limit(3).toArray();
+      const result = await BlogCollection.find({ status: 'approved' }).sort({ date: -1 }).limit(3).toArray();
       res.send(result)
     })
 
@@ -159,18 +159,28 @@ async function run() {
     })
 
     // saved user in database and role
-    app.put('/users/:email', async (req, res) => {
-      const email = req.params.email;
+    // app.put('/users/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = req.body;
+    //   const query = { email: email };
+    //   const options = { upsert: true }
+    //   const updateDoc = {
+    //     $set: user
+    //   }
+    //   const result = await userCollection.updateOne(query, updateDoc, options)
+    //   console.log(result);
+    //   res.send(result)
+    // })
+    app.post('/newUser', async (req, res) => {
       const user = req.body;
-      const query = { email: email };
-      const options = { upsert: true }
-      const updateDoc = {
-        $set: user
+      const query = { email: user.email }
+      const existingUser = await userCollection.findOne(query);
+      if (existingUser) {
+        return res.json({ message: 'user already exists' })
       }
-      const result = await userCollection.updateOne(query, updateDoc, options)
-      console.log(result);
-      res.send(result)
-    })
+      const result = await userCollection.insertOne(user);
+      res.json(result);
+    });
     // get all Users 
     app.get('/users', async (req, res) => {
       const result = await userCollection.find().toArray()
@@ -191,7 +201,7 @@ async function run() {
 
 
     // deny blog
-    app.patch('/blog/deny/:id',async (req, res) => {
+    app.patch('/blog/deny/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const updateDoc = {
@@ -201,16 +211,16 @@ async function run() {
       res.send(result)
     })
 
-      // set user role
-      app.patch('/users/admin/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) }
-        const updateDoc = {
-          $set: { role: 'admin' }
-        }
-        const result = await userCollection.updateOne(query, updateDoc);
-        res.send(result)
-      })
+    // set user role
+    app.patch('/users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateDoc = {
+        $set: { role: 'admin' }
+      }
+      const result = await userCollection.updateOne(query, updateDoc);
+      res.send(result)
+    })
 
     // get user role
     app.get('/users/:email', async (req, res) => {
@@ -220,7 +230,7 @@ async function run() {
       res.send(result)
     })
 
-  
+
 
 
 
