@@ -40,6 +40,11 @@ async function run() {
       res.send(result)
     });
 
+    // get all approved blogs
+    app.get('/blog/approved', async(req,res)=>{
+      const result = await BlogCollection.find({status : 'approved'}).toArray();
+      res.send(result)
+    })
     // post blog in database
     app.post('/blog', async (req, res) => {
       const blog = req.body
@@ -105,12 +110,12 @@ async function run() {
     // }) 
 
     app.get('/date', async (req, res) => {
-      const result = await BlogCollection.find().sort({ date: -1 }).limit(3).toArray();
+      const result = await BlogCollection.find({status : 'approved'}).sort({ date: -1 }).limit(3).toArray();
       res.send(result)
     })
 
     // get blog search by sub category category and tags
-    app.get('/blog/:text', async (req, res) => {
+    app.get('/find/:text', async (req, res) => {
       const text = req.params.text;
       const result = await BlogCollection.find({
         $or: [
@@ -206,6 +211,15 @@ async function run() {
         const result = await userCollection.updateOne(query, updateDoc);
         res.send(result)
       })
+
+    // get user role
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      res.send(result)
+    })
+
   
 
 
